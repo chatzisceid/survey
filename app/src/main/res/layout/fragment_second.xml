@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Type your answer "
+        android:hint="Type your answer here"
         android:inputType="text"
         android:text=""
         app:layout_constraintBottom_toTopOf="@id/button_second"
