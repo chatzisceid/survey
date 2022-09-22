@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">survey</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">My survey</string>
+    <string name="second_fragment_label">My survey</string>
+    <string name="start">Start Survey</string>
+    <string name="submit">Submit</string>
+
+    <string name="hello_first_fragment">Welcome</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
