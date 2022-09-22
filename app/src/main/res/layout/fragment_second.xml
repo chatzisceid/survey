@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".SecondFragment">
 
     <Button
@@ -14,39 +15,39 @@
         app:layout_constraintBottom_toBottomOf="@id/gl_h_65"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/answer"
-         />
+        app:layout_constraintTop_toBottomOf="@id/answer" />
 
     <Button
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Exit"
+        app:layout_constraintBottom_toTopOf="@id/gl_h_15"
         app:layout_constraintEnd_toStartOf="@id/quest_num"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gl_h_15"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/previous"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="11dp"
+        android:visibility="invisible"
         android:text="Previous"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/gl_h_15"
+        app:layout_constraintEnd_toStartOf="@+id/next"
         app:layout_constraintStart_toEndOf="@id/quest_num"
-        app:layout_constraintEnd_toStartOf="@+id/next" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/gl_h_15"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/previous" />
+        app:layout_constraintStart_toEndOf="@id/previous"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/answer"
@@ -58,8 +59,9 @@
         android:text=""
         app:layout_constraintBottom_toTopOf="@id/button_second"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/quest" />/>
+        app:layout_constraintTop_toTopOf="@+id/quest" />
 
     <TextView
         android:id="@+id/quest_sub"
@@ -67,21 +69,21 @@
         android:layout_height="wrap_content"
         android:text="Questions submitted: 0"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@id/gl_h_30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/gl_h_15"
-        app:layout_constraintBottom_toBottomOf="@id/gl_h_30"/>
+        app:layout_constraintTop_toTopOf="@+id/gl_h_15" />
 
     <TextView
         android:id="@+id/quest_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Question 1/20"
+        android:text="Question 0/0"
         android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/gl_h_15"
+        app:layout_constraintEnd_toStartOf="@id/previous"
         app:layout_constraintStart_toEndOf="@id/back"
-        app:layout_constraintEnd_toStartOf="@id/previous" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/quest"
@@ -90,10 +92,22 @@
 
         android:text="What is the best"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/answer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/answer"
-        app:layout_constraintTop_toBottomOf="@id/gl_h_30"/>
+        app:layout_constraintTop_toBottomOf="@id/gl_h_30" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/gl_h_15" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/gl_h_30" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_h_15"
@@ -115,16 +129,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.65" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@id/gl_h_15"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@id/gl_h_30"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
