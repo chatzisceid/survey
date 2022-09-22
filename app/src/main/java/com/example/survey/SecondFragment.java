@@ -89,32 +89,34 @@ public class SecondFragment extends Fragment {
             binding.questNum.setText("Question "+String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+"/"+String.valueOf(jsonArray.length()));
             binding.quest.setText(String.valueOf(jsonArray.getJSONObject(QUESTION).getString("question")));
 
-        binding.next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               QUESTION++;
-               if(QUESTION==jsonArray.length()-1) binding.next.setVisibility(View.INVISIBLE);
-                binding.previous.setVisibility(View.VISIBLE);
-                try {
-                    binding.questNum.setText("Question "+String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+"/"+String.valueOf(jsonArray.length()));
-                    binding.quest.setText(String.valueOf(jsonArray.getJSONObject(QUESTION).getString("question")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            binding.next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QUESTION++;
+                    binding.answer.setText("");
+                    if(QUESTION==jsonArray.length()-1)
+                        binding.next.setVisibility(View.INVISIBLE);
+                    binding.previous.setVisibility(View.VISIBLE);
+                    try {
+                        binding.questNum.setText("Question "+String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+"/"+String.valueOf(jsonArray.length()));
+                        binding.quest.setText(String.valueOf(jsonArray.getJSONObject(QUESTION).getString("question")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(FLAG_QUESTION[QUESTION]==1){
+                        binding.buttonSecond.setText("Submited");
+                        binding.buttonSecond.setClickable(false);
+                    }else{
+                        binding.buttonSecond.setText("Submit");
+                        binding.buttonSecond.setClickable(true);
+                    }
                 }
-                if(FLAG_QUESTION[QUESTION]==1){
-                    binding.buttonSecond.setText("Submited");
-                    binding.buttonSecond.setClickable(false);
-                }else{
-                    binding.buttonSecond.setText("Submit");
-                    binding.buttonSecond.setClickable(true);
-                }
-            }
-        });
+            });
 
             binding.previous.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    binding.answer.setHint("Type your answer here");
+                    binding.answer.setText("");
                     QUESTION--;
                     if(QUESTION==0) binding.previous.setVisibility(View.INVISIBLE);
                     binding.next.setVisibility(View.VISIBLE);
@@ -139,45 +141,51 @@ public class SecondFragment extends Fragment {
                 public void onClick(View view) {
 
                     String content = binding.answer.getText().toString();
-                     try {
-                        String body = "{\"id\":" +String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+ ",\"answer\":\"" +content+ "\"}";
-                        Log.d("Myaa",body);
-                        RequestBody formBody = new FormBody.Builder()
-                                .add("raw",body)
-                                .build();
-                    Request request = new Request.Builder()
-                            .url("https://powerful-peak-54206.herokuapp.com/question/submit")
-                            .post(formBody)
-                            .build();
-                        Response response = client.newCall(request).execute();
+                    Log.d("Myaa", content);
+                    if(!content.equals("")){
+                        try {
+                            String body = "{\"id\":" +String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+ ",\"answer\":\"" +content+ "\"}";
+                            Log.d("Myaa",body);
+                            RequestBody formBody = new FormBody.Builder()
+                                    .add("raw",body)
+                                    .build();
+                            Request request = new Request.Builder()
+                                    .url("https://powerful-peak-54206.herokuapp.com/question/submit")
+                                    .post(formBody)
+                                    .build();
+                            Response response = client.newCall(request).execute();
                             if (!response.isSuccessful()){
                                 Toast.makeText(getContext(), "Your answer was NOT submitted successfully. Try submitting again", Toast.LENGTH_LONG).show();
                             }
-                         Log.d("Myaa", String.valueOf(response));
+                            if(response.code()==200){
+                                FLAG_QUESTION[QUESTION]=1;
+                                binding.buttonSecond.setText("Submited");
+                                binding.buttonSecond.setClickable(false);
+                                Toast.makeText(getContext(), "Your answer was submitted successfully", Toast.LENGTH_LONG).show();
+                                QUESTION_SUBMITTED++;
+                                binding.questSub.setText("Questions submitted: "+QUESTION_SUBMITTED);
+                            }
+                        }catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Your answer was NOT submitted successfully. Write an answer then submit it", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
-                         if(response.code()==200){
-                            FLAG_QUESTION[QUESTION]=1;
-                            binding.buttonSecond.setText("Submited");
-                            binding.buttonSecond.setClickable(false);
-                            Toast.makeText(getContext(), "Your answer was submitted successfully", Toast.LENGTH_LONG).show();
-                            QUESTION_SUBMITTED++;
-                            binding.questSub.setText("Questions submitted: "+QUESTION_SUBMITTED);
-                         }
-                }catch (JSONException | IOException e) {
-                    e.printStackTrace();
-            }}});
+            binding.back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    NavHostFragment.findNavController(SecondFragment.this)
+                            .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                }
+            });
 
-        binding.back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
-        });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (JSONException | IOException e) {
             e.printStackTrace();
         }
-    }}
+    }
+}
