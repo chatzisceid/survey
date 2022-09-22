@@ -7,13 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import com.example.survey.databinding.FragmentSecondBinding;
@@ -33,6 +36,8 @@ import java.util.regex.Pattern;
 public class SecondFragment extends Fragment {
 
     public int QUESTION = 0;
+    public int[] FLAG_QUESTION = new int[20];
+    public int QUESTION_SUBMITTED = 0;
 
     private FragmentSecondBinding binding;
     @Override
@@ -76,6 +81,7 @@ public class SecondFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 jsonArray.put(jobj);
+                FLAG_QUESTION[i] = 0;
             }
             Log.d("Myapp", String.valueOf(jsonArray.length()));
             Log.d("Myapp", String.valueOf(jsonArray.getJSONObject(QUESTION)));
@@ -95,13 +101,20 @@ public class SecondFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                if(FLAG_QUESTION[QUESTION]==1){
+                    binding.buttonSecond.setText("Submited");
+                    binding.buttonSecond.setClickable(false);
+                }else{
+                    binding.buttonSecond.setText("Submit");
+                    binding.buttonSecond.setClickable(true);
+                }
             }
         });
 
             binding.previous.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    binding.answer.setHint("Type your answer here");
                     QUESTION--;
                     if(QUESTION==0) binding.previous.setVisibility(View.INVISIBLE);
                     binding.next.setVisibility(View.VISIBLE);
@@ -111,16 +124,48 @@ public class SecondFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    if(FLAG_QUESTION[QUESTION]==1){
+                        binding.buttonSecond.setText("Submited");
+                        binding.buttonSecond.setClickable(false);
+                    }else{
+                        binding.buttonSecond.setText("Submit");
+                        binding.buttonSecond.setClickable(true);
+                    }
                 }
             });
 
             binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     String content = binding.answer.getText().toString();
-                    Log.d("Myaa",content);
-                }
-            });
+                     try {
+                        String body = "{\"id\":" +String.valueOf(jsonArray.getJSONObject(QUESTION).getString("id"))+ ",\"answer\":\"" +content+ "\"}";
+                        Log.d("Myaa",body);
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("raw",body)
+                                .build();
+                    Request request = new Request.Builder()
+                            .url("https://powerful-peak-54206.herokuapp.com/question/submit")
+                            .post(formBody)
+                            .build();
+                        Response response = client.newCall(request).execute();
+                            if (!response.isSuccessful()){
+                                Toast.makeText(getContext(), "Your answer was NOT submitted successfully. Try submitting again", Toast.LENGTH_LONG).show();
+                            }
+                         Log.d("Myaa", String.valueOf(response));
+
+                         if(response.code()==200){
+                            FLAG_QUESTION[QUESTION]=1;
+                            binding.buttonSecond.setText("Submited");
+                            binding.buttonSecond.setClickable(false);
+                            Toast.makeText(getContext(), "Your answer was submitted successfully", Toast.LENGTH_LONG).show();
+                            QUESTION_SUBMITTED++;
+                            binding.questSub.setText("Questions submitted: "+QUESTION_SUBMITTED);
+                         }
+                }catch (JSONException | IOException e) {
+                    e.printStackTrace();
+            }}});
 
         binding.back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,36 +175,9 @@ public class SecondFragment extends Fragment {
             }
         });
 
-    } catch (IOException | JSONException e) {
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-    public class GetQuest {
-        final OkHttpClient client = new OkHttpClient();
-
-        String run(String url) throws IOException {
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-
-            try (Response response = client.newCall(request).execute()) {
-                return response.body().string();
-            }
-        }
-    }
-
-    static class Gist {
-        Map<String, GistFile> files;
-    }
-
-    static class GistFile {
-        String content;
-    }
-}
+    }}
